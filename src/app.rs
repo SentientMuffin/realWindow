@@ -15,6 +15,11 @@ struct GreetArgs<'a> {
     name: &'a str,
 }
 
+#[derive(Serialize, Deserialize)]
+struct V2rayArgs<'a> {
+    arg: &'a str,
+}
+
 pub fn App() -> Element {
     let mut name = use_signal(|| String::new());
     let mut greet_msg = use_signal(|| String::new());
@@ -24,11 +29,11 @@ pub fn App() -> Element {
             return;
         }
 
-        let name = name.read();
-        let args = serde_wasm_bindgen::to_value(&GreetArgs { name: &*name }).unwrap();
-        // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-        let new_msg = invoke("greet", args).await.as_string().unwrap();
-        greet_msg.set(new_msg);
+        let v2args = serde_wasm_bindgen::to_value(&V2rayArgs { arg: &*"version" }).unwrap();
+        let print_v2ray = invoke("v2ray", v2args).await.as_string().unwrap();
+
+        //greet_msg.set(new_msg);
+        greet_msg.set(print_v2ray);
     };
 
     static ICON_TAURI: Asset = asset!("/assets/tauri.svg");
